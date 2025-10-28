@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <!-- Links 🔗 -->
+    <link rel="stylesheet" href="Index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <link rel='stylesheet'
+        href='https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - Yinix Schools</title>
+</head>
+
+<body class="Yinix_Center Yinix_Background">
+
+    <form id="Signin_Form">
+        <input type="email" id="Signin_Email" placeholder="Email" required>
+        <input type="password" id="Signin_Password" placeholder="Password" required>
+        <button type="submit">Signin</button>
+    </form>
+    
+    <script>
+        const signinForm = document.getElementById('Signin_Form');
+
+        signinForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const Email = document.getElementById('Signin_Email').value;
+            const Password = document.getElementById('Signin_Password').value;
+
+            const res = await fetch('http://localhost:3000/api/accounts/signin', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ Email, Password })
+            });
+
+            const data = await res.json();
+            alert(data.message);
+        });
+    </script>
+
+
+</body>
+</html>

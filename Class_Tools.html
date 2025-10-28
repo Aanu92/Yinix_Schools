@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <!-- Links 🔗 -->
+    <link rel="stylesheet" href="Index.css">
+    <link rel='stylesheet'
+        href='https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Tools - Yinix Schools</title>
+</head>
+
+<body class="Yinix_Center Yinix_Background">
+
+    <div class="Tools" id="Tools">
+
+        <div id="StopwatchFullscreen">
+
+            <span class="StopwatchText">
+                <span id="StopwatchHours">00</span>:
+                <span id="StopwatchMinutes">00</span>:
+                <span id="StopwatchSeconds">00</span>:
+                <span id="StopwatchMilliseconds">00</span>
+            </span><br><br><br>
+
+            <div class="Stopwatch_Settings">
+                <button onclick="reset()" class="No_Background_Button"><i class="fi fi-rr-rotate-right"></i></button>
+
+                <button class="Background_Button" id="StartStopwatch" onclick="intervalId ? stop() : start()"></button>
+
+                <button id="FullscreenStopwatch" class="No_Background_Button" onclick="SetStopwatchFullscreen()"></button>
+            </div>
+        </div>
+    </div><br>
+
+    <div class="Tools_List">
+        <ul>
+            <li class="Active">Stopwatch</li>
+            <li>Timer</li>
+            <li>Clock</li>
+            <li>Counter</li>
+        </ul>
+    </div>
+
+
+    <script src="Index.js"></script>
+
+</body>
+
+</html>

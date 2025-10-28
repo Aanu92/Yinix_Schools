@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <!-- Links 🔗 -->
+    <link rel="stylesheet" href="Index.css">
+    <link rel='stylesheet'
+        href='https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Classrooms - Yinix Schools</title>
+
+</head>
+
+<body>
+
+    <!-- Header ✨ -->
+    <header class="Account_Header">
+        <h2>Yinix Schools</h2>
+
+        <div class="Account">
+            Hi, <!-- Account Name -->
+
+            <button class="Outline_Button">Sign Out</button>
+        </div>
+    </header>
+
+    <!-- Create Classroom -->
+    <dialog class="Create_Classroom_Form" id="Create_Classroom_Form">
+        <h2><i class="fi fi-rr-chalkboard-user"></i> Create Classroom</h2><br>
+        <form id="Classroom_Form">
+            <input type="text" id="Name" placeholder="Class Name*" required /><br>
+            <input type="text" id="Subject" placeholder="Subject" required /><br>
+            <input type="text" id="Teacher" placeholder="Teacher*" required /><br>
+            <input type="text" id="Room" placeholder="Room (Optional)" /><br>
+            <input type="text" id="Country" placeholder="Country*" required /><br>
+            <input type="text" id="State" placeholder="State/Province*" required /><br>
+            <input type="text" id="School" placeholder="School*" required /><br><br>
+
+            <img id="Preview_Image" src="" alt="Thumbnail Preview"><br><br>
+            <input type="file" id="Thumbnail" accept="image/*">
+            <label for="Thumbnail" class="file-upload-btn">
+                <i class="fi fi-rr-upload"></i>
+            </label><br><br><br>
+
+            <script>
+                const thumbnailInput = document.getElementById('Thumbnail');
+                const previewImage = document.getElementById('Preview_Image');
+
+                if (previewImage.src == "") {
+                    previewImage.style.display = "none";
+                }
+
+                thumbnailInput.addEventListener('change', () => {
+                    const file = thumbnailInput.files[0]; // get the selected file
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = () => {
+                            previewImage.src = reader.result; // this is a base64 URL
+                        }
+                        reader.readAsDataURL(file);
+                    }
+                });
+            </script>
+
+            <button class="Background_Button" type="submit"><i class="fi fi-rr-plus-small"></i> Create</button>
+            <button class="No_Background_Button" type="button" onclick="Classroom_Form_Close()"><i class="fi fi-rr-cross-small"></i> Close</button>
+        </form>
+    </dialog>
+
+    <!-- List of Classrooms -->
+    <div class="Classlist_Section">
+
+        <div class="Buttons">
+            <button class="Background_Button" onclick="
+                    Is_Create_Classroom_Form_Open ? Classroom_Form_Close() : Classroom_Form_Open()"><i
+                    class='fi fi-rr-plus-small'></i> Create
+            </button>
+
+            <button class="Outline_Button">Join</button>
+        </div><br><br>
+
+
+        <h2><i class="fi fi-rr-users-class"></i> All Classrooms</h2>
+        <div id="Classroom_List" class="Yinix_Image"></div>
+    </div>
+
+    <script>
+        const baseURL = "http://localhost:3000/api";
+
+        // Fetch all classrooms
+        async function LoadClassrooms() {
+            const res = await fetch(`${baseURL}/Classroom/all`);
+            const data = await res.json();
+
+            const list = document.getElementById("Classroom_List");
+            list.innerHTML = "";
+
+            data.forEach((classroom) => {
+                const div = document.createElement("div");
+                div.classList.add("Classroom");
+                div.innerHTML = `
+          <strong>${classroom.Name}</strong> — ${classroom.Subject}<br/>
+          <small>Teacher: ${classroom.Teacher}</small><br/>
+          <small>Location: ${classroom.State}, ${classroom.Country}</small><br/>
+          <small>Room: ${classroom.Room || "N/A"}</small><br/>
+          <!-- <div class="Divider"></div>
+          <div class="invite-form">
+            <input type="text" placeholder="Student Name" id="Name_${classroom._id}" />
+            <input type="email" placeholder="Student Email" id="Email_${classroom._id}" />
+            <button class="Background_Button" onclick="InviteStudent('${classroom._id}')"><i class="fi fi-rr-paper-plane-top"></i> Invite</button>
+          </div> -->
+        `;
+                list.appendChild(div);
+            });
+        }
+
+        // Create classroom
+        document.getElementById("Classroom_Form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const Name = document.getElementById("Name").value;
+            const Subject = document.getElementById("Subject").value;
+            const Teacher = document.getElementById("Teacher").value;
+            const Room = document.getElementById("Room").value;
+            const Country = document.getElementById("Country").value;
+            const State = document.getElementById("State").value;
+            const School = document.getElementById("School").value;
+
+            const res = await fetch(`${baseURL}/Classroom/create`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ Name, Subject, Teacher, Room, Country, State, School }),
+            });
+
+            const data = await res.json();
+            alert(data.message);
+            LoadClassrooms();
+
+            const All_Fields = document.querySelectorAll(".Create_Classroom_Form #Classroom_Form input");
+            All_Fields.forEach(Field => {
+                Field.value = ``;
+            });
+            Classroom_Form_Close();
+        });
+
+        // Invite student
+        async function InviteStudent(id) {
+            const StudentName = document.getElementById(`Name_${id}`).value;
+            const StudentEmail = document.getElementById(`Email_${id}`).value;
+
+            const res = await fetch(`${baseURL}/Classroom/invite`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ Classroom_ID: id, StudentName, StudentEmail }),
+            });
+
+            const data = await res.json();
+            alert(data.message);
+        }
+
+        LoadClassrooms();
+
+
+
+        let Is_Create_Classroom_Form_Open = false;
+        const Create_Classroom_Form = document.getElementById("Create_Classroom_Form");
+
+        function Classroom_Form_Open() {
+            Create_Classroom_Form.showModal();
+            Is_Create_Classroom_Form_Open = true;
+        }
+
+        function Classroom_Form_Close() {
+            Create_Classroom_Form.close();
+            Is_Create_Classroom_Form_Open = false;
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join Classroom - Yinix Schools</title>
+    <link rel="stylesheet" href="Index.css">
+    <link rel='stylesheet'
+        href='https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+</head>
+
+<body>
+
+    <!-- <div class="Join_Classroom_Form">
+        <h2><i class="fi fi-rr-chalkboard-user"></i> Join Classroom</h2>
+        <p id="Classroom_Info">Loading classroom info...</p>
+
+        <form id="JoinForm">
+            <input type="text" id="StudentName" placeholder="Your Name" required>
+            <input type="email" id="StudentEmail" placeholder="Your Email" required>
+            <button class="Background_Button" type="submit"><i class="fi fi-rr-paper-plane-top"></i> Join
+                Classroom</button>
+        </form>
+    </div> -->
+
+    <div class="Class_Thumb">
+      <h1><span id="Class_Name"></span></h1>
+    </div>
+
+    <div class="Annouce">
+        <input type="text" name="Annouce_Input" id="Annouce_Input">
+    </div>
+
+    <script>
+        const baseURL = "http://localhost:3000/api";
+        const urlParams = new URLSearchParams(window.location.search);
+        const classroomId = urlParams.get("classroomId");
+
+        const Class_Names = document.querySelectorAll("#Class_Name");
+
+        // Fetch classroom info
+        async function LoadClassroom() {
+            try {
+                const res = await fetch(`${baseURL}/Classroom/${classroomId}`);
+                const classroom = await res.json();
+
+                Class_Names.forEach(Class_Name => {
+                    Class_Name.innerHTML = classroom.Name;
+                });
+                // if (classroom.message) {
+                //     classroomInfo.textContent = classroom.message;
+                //     document.getElementById("JoinForm").style.display = "none";
+                // } else {
+                //     classroomInfo.innerHTML = `
+                //         <strong>${classroom.Name}</strong> — ${classroom.Subject}<br>
+                //         Teacher: ${classroom.Teacher}<br>
+                //         School: ${classroom.School}, ${classroom.State}, ${classroom.Country}
+                //     `;
+                // }
+            } catch (err) {
+                // classroomInfo.textContent = "Error loading classroom info!";
+                console.error(err);
+            }
+        }
+
+        LoadClassroom();
+
+        // Join classroom
+        // document.getElementById("JoinForm").addEventListener("submit", async (e) => {
+        //     e.preventDefault();
+        //     const StudentName = document.getElementById("StudentName").value;
+        //     const StudentEmail = document.getElementById("StudentEmail").value;
+
+        //     try {
+        //         const res = await fetch(`${baseURL}/Classroom/invite`, {
+        //             method: "POST",
+        //             headers: { "Content-Type": "application/json" },
+        //             body: JSON.stringify({ Classroom_ID: classroomId, StudentName, StudentEmail }),
+        //         });
+
+        //         const data = await res.json();
+        //         alert(data.message);
+
+        //         if (res.status === 200) {
+        //             document.getElementById("JoinForm").reset();
+        //             document.getElementById("JoinForm").style.display = "none";
+        //             classroomInfo.innerHTML += "<p>✅ You have joined the classroom!</p>";
+        //         }
+        //     } catch (err) {
+        //         console.error(err);
+        //         alert("Error joining classroom!");
+        //     }
+        // });
+    </script>
+
+</body>
+
+</html>
